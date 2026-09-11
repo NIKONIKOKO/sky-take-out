@@ -1,5 +1,6 @@
 package com.sky.handler;
 
+import com.sky.constant.MessageConstant;
 import com.sky.exception.BaseException;
 import com.sky.result.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -24,4 +25,19 @@ public class GlobalExceptionHandler {
         return Result.error(ex.getMessage());
     }
 
+    public Result mysqlExceptionHandler(Exception ex){
+        String message = ex.getMessage();
+        log.error("异常信息：{}", message);
+        if(message.contains("Data too long")){
+            String[] split = message.split(" ");
+            String data = split[7];
+            return Result.error(data + MessageConstant.INVALID_PARAMETER);
+        }
+        if(message.contains("Duplicate entry")){
+            String[] split = message.split(" ");
+            String data = split[2];
+            return Result.error(MessageConstant.ACCOUNT_ALREADY_EXISTS);
+        }
+        return Result.error(MessageConstant.UNKNOWN_ERROR);
+    }
 }
