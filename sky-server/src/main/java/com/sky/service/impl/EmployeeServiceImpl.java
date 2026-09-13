@@ -86,10 +86,10 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .sex(employeeDTO.getSex())
                 .idNumber(employeeDTO.getIdNumber())
                 .status(StatusConstant.ENABLE) // 新增员工默认启用状态
-                .createTime(java.time.LocalDateTime.now())
-                .updateTime(java.time.LocalDateTime.now())
-                .createUser(BaseContext.getCurrentId())
-                .updateUser(BaseContext.getCurrentId())
+//                .createTime(java.time.LocalDateTime.now())
+//                .updateTime(java.time.LocalDateTime.now())
+//                .createUser(BaseContext.getCurrentId())
+//                .updateUser(BaseContext.getCurrentId())
                 .build();
 
         employeeMapper.insert(employee);
@@ -112,8 +112,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         // 更新员工状态
         existEmployee.setStatus(Integer.parseInt(status));
-        existEmployee.setUpdateTime(java.time.LocalDateTime.now());
-        existEmployee.setUpdateUser(BaseContext.getCurrentId());
+//        existEmployee.setUpdateTime(java.time.LocalDateTime.now());
+//        existEmployee.setUpdateUser(BaseContext.getCurrentId());
 
         employeeMapper.updateById(existEmployee);
     }
@@ -139,8 +139,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         existEmployee.setPhone(employeeDTO.getPhone());
         existEmployee.setSex(employeeDTO.getSex());
         existEmployee.setIdNumber(employeeDTO.getIdNumber());
-        existEmployee.setUpdateTime(java.time.LocalDateTime.now());
-        existEmployee.setUpdateUser(BaseContext.getCurrentId());
+//        existEmployee.setUpdateTime(java.time.LocalDateTime.now());
+//        existEmployee.setUpdateUser(BaseContext.getCurrentId());
         employeeMapper.updateById(existEmployee);
     }
 
@@ -159,8 +159,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         // 更新员工密码
         String newPassword = DigestUtils.md5DigestAsHex(passwordEditDTO.getNewPassword().getBytes());
         existEmployee.setPassword(newPassword);
-        existEmployee.setUpdateTime(java.time.LocalDateTime.now());
-        existEmployee.setUpdateUser(BaseContext.getCurrentId());
+//        existEmployee.setUpdateTime(java.time.LocalDateTime.now());
+//        existEmployee.setUpdateUser(BaseContext.getCurrentId());
         employeeMapper.updateById(existEmployee);
     }
 
