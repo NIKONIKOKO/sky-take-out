@@ -104,8 +104,6 @@ public class EmployeeController {
             log.info("启用员工：id={}", id);
         } else if (status.equals("0")) {
             log.info("禁用员工：id={}", id);
-        } else {
-            return Result.error("无效的状态值");
         }
         employeeService.updateEmployeeStatus(id, status);
         return Result.success();
@@ -126,7 +124,7 @@ public class EmployeeController {
     }
     @PutMapping("/editPassword")
     @ApiOperation(value = "修改员工密码")
-    public Result editPassword(@RequestBody PasswordEditDTO passwordEditDTO) {
+    public Result editEmployeePassword(@RequestBody PasswordEditDTO passwordEditDTO) {
         log.info("修改密码：{}", passwordEditDTO);
         employeeService.updateEmployeePassword(passwordEditDTO);
         return Result.success();
