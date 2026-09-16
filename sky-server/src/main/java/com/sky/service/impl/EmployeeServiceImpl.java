@@ -1,18 +1,14 @@
 package com.sky.service.impl;
 
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.PasswordConstant;
 import com.sky.constant.StatusConstant;
-import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.PasswordEditDTO;
 import com.sky.entity.Employee;
-import com.sky.exception.AccountLockedException;
-import com.sky.exception.AccountNotFoundException;
-import com.sky.exception.PasswordErrorException;
+import com.sky.exception.*;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
@@ -44,7 +40,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         String password = employeeLoginDTO.getPassword();
 
         //1、根据用户名查询数据库中的数据
-        Employee employee = employeeMapper.getByUsername(username);
+        Employee employee = employeeMapper.selectByUsername(username);
 
         //2、处理各种异常情况（用户名不存在、密码不对、账号被锁定）
         if (employee == null) {
@@ -73,9 +69,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public void addEmployee(EmployeeDTO employeeDTO) {
         // 先查询用户名是否存在
-        Employee existingEmployee = employeeMapper.getByUsername(employeeDTO.getUsername());
+        Employee existingEmployee = employeeMapper.selectByUsername(employeeDTO.getUsername());
         if (existingEmployee != null) {
-            throw new RuntimeException("用户名已存在");
+            throw new AccountAlreadyExistException(MessageConstant.ACCOUNT_ALREADY_EXISTS);
         }
         // 1、将DTO对象转换为实体对象
         Employee employee = Employee.builder()
@@ -99,16 +95,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     public PageResult getEmployeePage(Integer page, Integer pageSize, String name) {
         PageHelper.startPage(page, pageSize);
         // 这里应该调用Mapper的方法来查询员工分页数据
-        List<Employee> employees = employeeMapper.getPageByName(name); // 假设你有一个根据姓名查询员工的方法
+        List<Employee> employees = employeeMapper.selectPageByName(name); // 假设你有一个根据姓名查询员工的方法
         return new PageResult(employees.size(), employees);
     }
 
     @Override
     public void updateEmployeeStatus(String id, String status) {
         // 先查询员工是否存在
-        Employee existEmployee = employeeMapper.getById(Long.parseLong(id));
+        Employee existEmployee = employeeMapper.selectById(Long.parseLong(id));
         if (existEmployee == null) {
-            throw new RuntimeException("员工不存在");
+            throw new AccountLockedException(MessageConstant.ACCOUNT_NOT_FOUND);
         }
         // 更新员工状态
         existEmployee.setStatus(Integer.parseInt(status));
@@ -121,16 +117,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee getEmployeeById(String id) {
         log.info("根据id查询员工：id={}", id);
-        Employee employee = employeeMapper.getById(Long.parseLong(id));
+        Employee employee = employeeMapper.selectById(Long.parseLong(id));
         employee.setPassword("***");
         return employee;
     }
     @Override
     public void updateEmployeeInfo(EmployeeDTO employeeDTO) {
         // 先查询员工是否存在
-        Employee existEmployee = employeeMapper.getById(employeeDTO.getId());
+        Employee existEmployee = employeeMapper.selectById(employeeDTO.getId());
         if (existEmployee == null) {
-            throw new RuntimeException("员工不存在");
+            throw new AccountNotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
         }
         // 更新员工信息
         existEmployee.setId(employeeDTO.getId());
@@ -147,14 +143,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void updateEmployeePassword(PasswordEditDTO passwordEditDTO) {
         // 先查询员工是否存在
-        Employee existEmployee = employeeMapper.getById(passwordEditDTO.getEmpId());
+        Employee existEmployee = employeeMapper.selectById(passwordEditDTO.getEmpId());
         if (existEmployee == null) {
-            throw new RuntimeException("员工不存在");
+            throw new AccountNotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
         }
         // 不确定是否需要验证旧密码
         // 需要验证旧密码的开关
         if (!existEmployee.getPassword().equals(DigestUtils.md5DigestAsHex(passwordEditDTO.getOldPassword().getBytes()))) {
-            throw new RuntimeException("旧密码错误");
+            throw new PasswordEditFailedException(MessageConstant.PASSWORD_EDIT_FAILED);
         }
         // 更新员工密码
         String newPassword = DigestUtils.md5DigestAsHex(passwordEditDTO.getNewPassword().getBytes());

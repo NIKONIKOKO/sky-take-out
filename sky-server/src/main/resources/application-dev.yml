@@ -6,3 +6,8 @@ sky:
     database: sky_take_out
     username: "root"
     password: "root"
+  alioss:
+    endpoint: oss-cn-chengdu.aliyuncs.com  # 替换为你 Bucket 所在的地域 Endpoint
+    access-key-id: ${OSS_ACCESS_KEY_ID}      # 你的 AccessKey ID
+    access-key-secret: ${OSS_ACCESS_KEY_SECRET} # 你的 AccessKey Secret
+    bucket-name: sky-take-out-0326          # 你的 Bucket 名称

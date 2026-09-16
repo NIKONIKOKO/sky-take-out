@@ -24,11 +24,13 @@
         <commons.lang>2.6</commons.lang>
         <druid>1.2.1</druid>
         <pagehelper>1.3.0</pagehelper>
-        <aliyun.sdk.oss>3.10.2</aliyun.sdk.oss>
+        <aliyun.sdk.oss>3.18.4</aliyun.sdk.oss>
         <knife4j>3.0.2</knife4j>
         <aspectj>1.9.4</aspectj>
         <jjwt>0.9.1</jjwt>
         <jaxb-api>2.3.1</jaxb-api>
+        <jax-activation>1.1.1</jax-activation>
+        <jaxb-runtime>2.3.3</jaxb-runtime>
         <poi>3.16</poi>
     </properties>
     <dependencyManagement>
@@ -106,6 +108,17 @@
                 <version>${jaxb-api}</version>
             </dependency>
 
+            <dependency>
+                <groupId>javax.activation</groupId>
+                <artifactId>activation</artifactId>
+                <version>${jax-activation}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-runtime</artifactId>
+                <version>${jaxb-runtime}</version>
+            </dependency>
             <!-- poi -->
             <dependency>
                 <groupId>org.apache.poi</groupId>
